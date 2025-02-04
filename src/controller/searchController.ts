@@ -1,55 +1,13 @@
+// searchController.ts
 import { Request, Response } from 'express';
-import MagazineContent from '../model/magazineContent.model';
-import { generateEmbedding } from '../utils/embedding';
-import { Op, Sequelize } from 'sequelize';
-import { fullTextSearch } from '../services/magazineSearch.service'; // assuming the search service is in searchService.ts
+import * as SearchService from '../services/magazineSearch.service';  // Import the service
 
-
-// Vector search 
-export const searchMagazines = async (req: Request, res: Response): Promise<any> => {
-    try {
-        const { query } = req.body;
-        if (!query) {
-            return res.status(400).json({ error: 'Query text is required' });
-        }
-
-        const vectorEmbedding = await generateEmbedding(query);
-
-        if (!vectorEmbedding || vectorEmbedding.length === 0) {
-            return res.status(500).json({ error: 'Failed to generate embedding' });
-        }
-
-        const results = await MagazineContent.findAll({
-            order: [
-                [
-                    Sequelize.literal(`
-                        CAST(content_embedding AS vector) <-> CAST('${vectorEmbedding}' AS vector)
-                    `),
-                    'ASC'
-                ]
-            ],
-            limit: 10
-        });
-
-
-        res.json(results);
-    } catch (error) {
-        console.error('Hybrid Search Error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-};
-
-// Magazine search 
-
+// **Keyword Search**: Search based on keywords in title, author, and content.
 export const keywordSearch = async (req: Request, res: Response) => {
     const { query, page, pageSize } = req.query;
 
     try {
-        const results = await fullTextSearch(
-            query as string,
-            Number(page) || 1,
-            Number(pageSize) || 10
-        );
+        const results = await SearchService.performKeywordSearch(query as string, Number(page) || 1, Number(pageSize) || 10);
         res.json({
             status: 'success',
             data: results
@@ -57,8 +15,47 @@ export const keywordSearch = async (req: Request, res: Response) => {
     } catch (error) {
         res.status(500).json({
             status: 'error',
-            message: 'Error performing full-text search',
-            error
+            message: error || 'Error performing full-text search'
+        });
+    }
+};
+
+// **Vector Search**: Search based on vector similarity.
+export const vectorSearch = async (req: Request, res: Response) => {
+    const { query, pageSize } = req.body;  // Query will come from the body for vector search
+
+    try {
+        const results = await SearchService.getVectorSearch(query, pageSize);
+        res.json({
+            status: 'success',
+            data: results
+        });
+    } catch (error) {
+        console.log("ERROR :: ", error);
+
+        res.status(500).json({
+            status: 'error',
+            message: error || 'Error performing vector search'
+        });
+    }
+};
+
+// **Hybrid Search**: Combine results from both keyword and vector searches.
+export const hybridSearch = async (req: Request, res: Response) => {
+    const { query, page, pageSize } = req.body;  // Query comes from the body
+
+    try {
+        const results = await SearchService.performHybridSearch(query, page, pageSize);
+        console.log("hybridSearch :: Controller :: results ", results);
+
+        res.json({
+            status: 'success',
+            data: results
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: 'error',
+            message: error || 'Error performing hybrid search'
         });
     }
 };
