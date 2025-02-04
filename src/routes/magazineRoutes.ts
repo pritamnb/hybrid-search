@@ -7,6 +7,8 @@ const router = Router();
 router.get('/magazines', getMagazines);
 
 // Add a new magazine
-router.post('/magazines', addMagazine);
+router.post('/magazine', addMagazine);
+
+// router.post('/add-magazines', addMagazinesBulk);
 
 export default router;

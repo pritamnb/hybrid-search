@@ -8,8 +8,9 @@ dotenv.config();
 const initDB = async () => {
     await connectDB();
     await sequelize.sync({ force: false })
-        .then(() => {
+        .then(async () => {
             console.log('Database synced!');
+            await sequelize.query('ALTER TABLE magazine_content ALTER COLUMN content_embedding TYPE vector(1024);');
         })
         .catch((error) => {
             console.error('Error syncing the database:', error);

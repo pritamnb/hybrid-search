@@ -38,4 +38,5 @@ MagazineInformation.init(
     }
 );
 
+
 export default MagazineInformation;
