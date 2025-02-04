@@ -1,17 +1,5 @@
 version: "3.8"
 services:
-  api:
-    build: .
-    ports:
-      - "3000:3000"
-    depends_on:
-      - db
-    env_file:
-      - .env
-    environment:
-      DATABASE_URL: postgres://postgres:password@db:5432/magazine_db
-    restart: always
-
   db:
     image: postgres:15
     restart: always
@@ -26,4 +14,3 @@ services:
 
 volumes:
   pgdata:
-  

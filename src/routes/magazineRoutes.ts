@@ -1,18 +1,12 @@
-import { Request, Response, Router } from 'express';
-import pool from '../config/db';
-import { addMagazine } from '../controller/magzineController';
+import { Router } from 'express';
+import { getMagazines, addMagazine } from '../controller/magazineController';
 
 const router = Router();
 
-router.get('/magazines', async (req: Request, res: Response) => {
-    try {
-        const result = await pool.query('SELECT * FROM magazines');
-        res.json(result.rows);
-    } catch (error) {
-        console.error('Database query error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
+// Fetch all magazines
+router.get('/magazines', getMagazines);
+
+// Add a new magazine
 router.post('/magazines', addMagazine);
 
 export default router;
