@@ -28,7 +28,8 @@ MagazineContent.init(
             type: DataTypes.TEXT,
         },
         content_embedding: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            allowNull: true,
         },
         content_tsvector: {
             type: DataTypes.TSVECTOR,

@@ -1,10 +1,8 @@
 import { Request, Response } from 'express';
-import Magazine from '../model/magazineInfo';
 import MagazineContent from '../model/magazineContent.model';
 import { generateEmbedding } from '../utils/embedding';
 import { Op, Sequelize } from 'sequelize';
-import MagazineInformation from '../model/magazineInfo';
-import sequelize from 'sequelize';
+import { fullTextSearch } from '../services/magazineSearch.service'; // assuming the search service is in searchService.ts
 
 
 // Vector search 
@@ -43,48 +41,24 @@ export const searchMagazines = async (req: Request, res: Response): Promise<any>
 
 // Magazine search 
 
-export const keywordSearch = async (req: Request, res: Response): Promise<any> => {
-    const { keyword } = req.query;  // Get the search keyword from the request query
-
-    if (!keyword) {
-        return res.status(400).json({ error: "Keyword is required for search." });
-    }
+export const keywordSearch = async (req: Request, res: Response) => {
+    const { query, page, pageSize } = req.query;
 
     try {
-        // Perform a search across title, author, and content fields using full-text search
-        const magazines = await MagazineInformation.findAll({
-            where: {
-                [Op.or]: [
-                    sequelize.where(sequelize.fn('to_tsvector', 'english', sequelize.col('title')), {
-                        [Op.match]: sequelize.fn('plainto_tsquery', 'english', keyword)
-                    }),
-                    sequelize.where(sequelize.fn('to_tsvector', 'english', sequelize.col('author')), {
-                        [Op.match]: sequelize.fn('plainto_tsquery', 'english', keyword)
-                    }),
-                    sequelize.where(sequelize.fn('to_tsvector', 'english', sequelize.col('MagazineContent.content')), {
-                        [Op.match]: sequelize.fn('plainto_tsquery', 'english', keyword)
-                    })
-                ]
-            },
-            include: [
-                {
-                    model: MagazineContent,
-                    required: true, // Ensures MagazineContent is included in the result
-                    attributes: ['content']  // Only fetch the content field from MagazineContent
-                }
-            ],
-            limit: 10, // Optional: Add pagination if needed
+        const results = await fullTextSearch(
+            query as string,
+            Number(page) || 1,
+            Number(pageSize) || 10
+        );
+        res.json({
+            status: 'success',
+            data: results
         });
-
-        if (magazines.length === 0) {
-            return res.status(404).json({ message: 'No magazines found matching the search criteria.' });
-        }
-
-        // Send back the found magazines
-        return res.status(200).json(magazines);
-
     } catch (error) {
-        console.error("Error during search:", error);
-        return res.status(500).json({ error: 'Error performing the search.' });
+        res.status(500).json({
+            status: 'error',
+            message: 'Error performing full-text search',
+            error
+        });
     }
 };
