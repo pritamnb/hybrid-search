@@ -1,7 +1,6 @@
 // magazineSearch.service.ts
 import { QueryTypes, Sequelize, Op } from 'sequelize';
 import { sequelize } from '../config/db';
-import MagazineContent from '../model/magazineContent.model';
 import { generateEmbedding } from '../utils/embedding';
 
 // Full-text search service
@@ -53,7 +52,6 @@ export const performKeywordSearch = async (query: string, page: number, pageSize
 };
 
 export const getVectorSearch = async (query: string, page: number = 1, pageSize: number = 10, threshold: number = 0.8) => {
-    console.log("getVectorSearch :: query :: ", query);
 
     try {
         // Generate embedding for the search query
@@ -85,7 +83,6 @@ export const getVectorSearch = async (query: string, page: number = 1, pageSize:
             type: QueryTypes.SELECT,
         });
 
-        console.log("results :: ", results);
 
         // Filter results based on the threshold and exclude similarity_score from the response
         const filteredResults = results
@@ -120,7 +117,6 @@ export const performHybridSearch = async (query: string, page: number, pageSize:
 
         // Perform vector search
         const vectorResults = await getVectorSearch(query, page, pageSize);
-        console.log("vectorResults :: ", vectorResults);
 
         // Combine both results
         return mergeResults(keywordResults, vectorResults);
