@@ -26,7 +26,7 @@ app.use((req, res, next) => {
 });
 
 // Mount routes
-app.use('/api', searchRoutes);
+app.use('/api/search', searchRoutes);
 app.use('/api', magazineRoute);
 
 // Health check route

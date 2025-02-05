@@ -24,9 +24,6 @@ interface MagazineData {
     category: string;
 }
 
-interface Embedding {
-    embedding: number[];
-}
 
 
 export const addMagazine = async (req: Request, res: Response): Promise<any> => {

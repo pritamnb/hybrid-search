@@ -1,10 +1,18 @@
-import { Router } from 'express';
-import { vectorSearch, keywordSearch, hybridSearch } from '../controller/searchController';  // Adjust path if needed
+import express from 'express';
+import { SearchController } from '../controller/searchController';
+import { MagazineSearchService } from '../services/magazineSearch.service';
+import { MagazineRepository } from '../repository/magazineRepository';
 
-const router = Router();
+const router = express.Router();
 
-router.post('/search', vectorSearch);  // Correctly using the async handler
-router.get('/search', keywordSearch);  // Correctly using the async handler
-router.post('/search/hybrid', hybridSearch);  // Correctly using the async handler
+// Instantiate repository, service, and controller
+const magazineRepository = new MagazineRepository();
+const magazineSearchService = new MagazineSearchService(magazineRepository);
+const searchController = new SearchController(magazineSearchService);
+
+// Define routes
+router.get('/keyword', (req, res) => searchController.keywordSearch(req, res));
+router.post('/vector', (req, res) => searchController.vectorSearch(req, res));
+router.post('/hybrid', (req, res) => searchController.hybridSearch(req, res));
 
 export default router;
