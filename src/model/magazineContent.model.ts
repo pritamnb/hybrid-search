@@ -5,8 +5,8 @@ class MagazineContent extends Model {
     public id!: number;
     public magazine_id!: number;
     public content!: string;
-    public content_embedding!: number[];  // Assuming it's an array of numbers
-    public content_tsvector!: any;  // You can adjust the type of content_tsvector based on how it's used
+    public content_embedding!: number[];
+    public content_tsvector!: any;
 }
 
 MagazineContent.init(
@@ -38,6 +38,17 @@ MagazineContent.init(
     {
         sequelize,
         tableName: 'magazine_content',
+        indexes: [
+            {
+                name: 'magazine_id_index',
+                fields: ['magazine_id'],
+
+            },
+            {
+                name: 'content_tsvector_index',
+                fields: ['content_tsvector'],
+            }
+        ],
     }
 );
 

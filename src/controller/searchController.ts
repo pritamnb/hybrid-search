@@ -1,61 +1,57 @@
-// searchController.ts
-import { Request, Response } from 'express';
-import * as SearchService from '../services/magazineSearch.service';  // Import the service
+import { Request, Response } from "express";
+import { BaseController } from "./baseController";
+import { MagazineSearchService } from "../services/magazineSearch.service";
 
-// **Keyword Search**: Search based on keywords in title, author, and content.
-export const keywordSearch = async (req: Request, res: Response) => {
-    const { query, page, pageSize } = req.query;
+export class SearchController extends BaseController {
+    private searchService: MagazineSearchService;
 
-    try {
-        const results = await SearchService.performKeywordSearch(query as string, Number(page) || 1, Number(pageSize) || 10);
-        res.json({
-            status: 'success',
-            data: results
-        });
-    } catch (error) {
-        res.status(500).json({
-            status: 'error',
-            message: error || 'Error performing full-text search'
-        });
+    constructor(searchService: MagazineSearchService) {
+        super();
+        this.searchService = searchService;
     }
-};
 
-// **Vector Search**: Search based on vector similarity.
-export const vectorSearch = async (req: Request, res: Response) => {
-    const { query, pageSize } = req.body;  // Query will come from the body for vector search
+    public async keywordSearch(req: Request, res: Response): Promise<void> {
+        const { query, page, pageSize } = req.query;
 
-    try {
-        const results = await SearchService.getVectorSearch(query, pageSize);
-        res.json({
-            status: 'success',
-            data: results
-        });
-    } catch (error) {
-        console.log("ERROR :: ", error);
-
-        res.status(500).json({
-            status: 'error',
-            message: error || 'Error performing vector search'
-        });
+        try {
+            const results = await this.searchService.performKeywordSearch(
+                query as string,
+                Number(page) || 1,
+                Number(pageSize) || 10
+            );
+            this.handleSuccess(res, results);
+        } catch (error: unknown) {
+            this.handleError(res, error, "Error performing keyword search");
+        }
     }
-};
 
-// **Hybrid Search**: Combine results from both keyword and vector searches.
-export const hybridSearch = async (req: Request, res: Response) => {
-    const { query, page, pageSize } = req.body;  // Query comes from the body
+    public async vectorSearch(req: Request, res: Response): Promise<void> {
+        const { query, page, pageSize } = req.body;
 
-    try {
-        const results = await SearchService.performHybridSearch(query, page, pageSize);
-        console.log("hybridSearch :: Controller :: results ", results);
-
-        res.json({
-            status: 'success',
-            data: results
-        });
-    } catch (error) {
-        res.status(500).json({
-            status: 'error',
-            message: error || 'Error performing hybrid search'
-        });
+        try {
+            const results = await this.searchService.getVectorSearch(
+                query,
+                Number(page) || 1,
+                Number(pageSize) || 10
+            );
+            this.handleSuccess(res, results);
+        } catch (error: unknown) {
+            this.handleError(res, error, "Error performing vector search");
+        }
     }
-};
+
+    public async hybridSearch(req: Request, res: Response): Promise<void> {
+        const { query, page, pageSize } = req.body;
+
+        try {
+            const results = await this.searchService.performHybridSearch(
+                query,
+                Number(page) || 1,
+                Number(pageSize) || 10
+            );
+            this.handleSuccess(res, results);
+        } catch (error: unknown) {
+            this.handleError(res, error, "Error performing hybrid search");
+        }
+    }
+}

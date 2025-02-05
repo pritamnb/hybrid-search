@@ -20,11 +20,11 @@ const createDatabaseIfNotExists = async (dbName: string) => {
 
         // Create the database if it doesn't exist
         if (res.rowCount === 0) {
-            console.log(`Database "${dbName}" does not exist. Creating it...`);
+            console.info(`Database "${dbName}" does not exist. Creating it...`);
             await postgresClient.query(`CREATE DATABASE ${dbName}`);
-            console.log(`Database "${dbName}" created successfully.`);
+            console.info(`Database "${dbName}" created successfully.`);
         } else {
-            console.log(`Database "${dbName}" already exists.`);
+            console.info(`Database "${dbName}" already exists.`);
         }
 
         // Close the connection
@@ -50,11 +50,11 @@ const connectDB = async () => {
 
         // Authenticate with the database
         await sequelize.authenticate();
-        console.log('Database connected successfully.');
+        console.info('Database connected successfully.');
 
         // Ensure the vector extension exists in the database
         await sequelize.query('CREATE EXTENSION IF NOT EXISTS vector;');
-        console.log('Vector extension ensured.');
+        console.info('Vector extension ensured.');
     } catch (error) {
         console.error('Unable to connect to the database:', error);
     }

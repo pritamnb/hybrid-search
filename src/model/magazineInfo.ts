@@ -1,5 +1,5 @@
 import { Sequelize, DataTypes, Model } from 'sequelize';
-import { sequelize } from '../config/db';  // Ensure this import is correctly pointing to your sequelize instance
+import { sequelize } from '../config/db';
 
 class MagazineInformation extends Model {
     public id!: number;
@@ -35,6 +35,20 @@ MagazineInformation.init(
     {
         sequelize,
         tableName: 'magazine_information',
+        indexes: [
+            {
+                name: 'title_index',  // Index name 
+                fields: ['title'],
+            },
+            {
+                name: 'author_index',
+                fields: ['author'],
+            },
+            {
+                name: 'category_index',
+                fields: ['category'],
+            },
+        ],
     }
 );
 
