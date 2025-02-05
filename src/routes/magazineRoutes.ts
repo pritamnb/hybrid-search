@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { MagazineController } from '../controller/magazineController';
 import { magazineData } from '../utils/magazine_data';
 import { MagazineService } from '../services/addMagazineService';
+import { generateFakeMagazines } from '../utils/fakeData';
 
 const router = Router();
 const magazineController = new MagazineController();
@@ -26,6 +27,21 @@ router.get('/load-magazines', async (req, res) => {
     } catch (error) {
         console.error('Error inserting magazines:', error);
         res.status(500).json({ error: 'Failed to insert magazines' });
+    }
+});
+router.get("/load-fake-magazines", async (req, res) => {
+    try {
+        const fakeMagazines = generateFakeMagazines(20); // Generate 20 fake records
+
+        for (const record of fakeMagazines) {
+            await magazineService.addMagazine(record);
+            console.log(`Inserted: ${record.title}`);
+        }
+
+        res.json({ message: "Fake magazines loaded successfully" });
+    } catch (error) {
+        console.error("Error inserting fake magazines:", error);
+        res.status(500).json({ error: "Failed to insert fake magazines" });
     }
 });
 

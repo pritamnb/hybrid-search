@@ -30,7 +30,7 @@ app.use('/api/search', searchRoutes);
 app.use('/api', magazineRoute);
 
 // Health check route
-app.get('/health', (req: Request, res: Response) => {
+app.get('/health', (res: Response) => {
     res.send('Server is running...');
 });
 

@@ -1,0 +1,206 @@
+{
+	"info": {
+		"_postman_id": "cc7ae100-fce7-4d87-aa4e-d35805f428ff",
+		"name": "Hybrid Search API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7681856"
+	},
+	"item": [
+		{
+			"name": "Vector Search",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"query\": \"architecture\"}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/search/vector",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"search",
+						"vector"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Magazines",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/magazines",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"magazines"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Magazine",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"title\": \"The Evolution of Fashion Design\",\r\n        \"author\": \"Sophia Clark\",\r\n        \"content\": \"How fashion design has evolved over the decades and its influence on global culture.\",\r\n        \"category\": \"Fashion\"\r\n    }"
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/magazine",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"magazine"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Keyword search",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/search/keyword?query=architecture&page=1&pageSize=10",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"search",
+						"keyword"
+					],
+					"query": [
+						{
+							"key": "query",
+							"value": "architecture"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Hybrid",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"query\": \"architecture\",\r\n    \"page\": 1,\r\n    \"pageSize\": 10\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/search/hybrid",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"search",
+						"hybrid"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Load magazines",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/load-magazines",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"load-magazines"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fake load data",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/load-fake-magazines",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"load-fake-magazines"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
