@@ -26,10 +26,8 @@ export class MagazineService {
 
             // Create magazine and content entries
             const magazineInfo = await this.magazineRepo.createMagazineEntry(magazineData, transaction);
-            console.log("magazineInfo :::: ", magazineInfo);
 
             const magazineContent = await this.magazineRepo.createMagazineContentEntry(magazineData, magazineInfo.id, embedding, transaction);
-            console.log("magazineContent :::: ", magazineContent);
 
 
             await transaction.commit();

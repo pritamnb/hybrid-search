@@ -1,4 +1,3 @@
-// services/MagazineSearchService.ts
 import { ISearchService } from "../interfaces/ISearchService";
 import { IMagazineRepository } from "../interfaces/IMagazineRepository";
 
@@ -13,8 +12,8 @@ export class MagazineSearchService implements ISearchService {
         return await this.repository.searchByKeyword(query, page, pageSize);
     }
 
-    async getVectorSearch(query: string, page: number = 1, pageSize: number = 10, threshold: number = 0.8): Promise<any[]> {
-        return await this.repository.searchByVector(query, page, pageSize, threshold);
+    async getVectorSearch(query: string, page: number = 1, pageSize: number = 10): Promise<any[]> {
+        return await this.repository.searchByVector(query, page, pageSize);
     }
 
     async performHybridSearch(query: string, page: number = 1, pageSize: number = 10): Promise<any[]> {

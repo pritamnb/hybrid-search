@@ -16,7 +16,7 @@ export class MagazineController extends BaseController {
             const magazines = await this.magazineService.getMagazines();
             this.handleSuccess(res, magazines);
         } catch (error) {
-            this.handleSuccess(res, 'Error fetching magazines');
+            this.handleError(res, error, 'Error fetching magazines');
         }
     }
 
@@ -27,7 +27,7 @@ export class MagazineController extends BaseController {
             const { magazineInfo, magazineContent } = await this.magazineService.addMagazine(magazineData);
             this.handleSuccess(res, { magazineInfo, magazineContent });
         } catch (error) {
-            this.handleSuccess(res, 'Could not add magazine.');
+            this.handleError(res, error, 'Could not add magazine.');
         }
     }
 }

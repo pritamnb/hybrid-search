@@ -35,6 +35,20 @@ MagazineInformation.init(
     {
         sequelize,
         tableName: 'magazine_information',
+        indexes: [
+            {
+                name: 'title_index',  // Index name 
+                fields: ['title'],
+            },
+            {
+                name: 'author_index',
+                fields: ['author'],
+            },
+            {
+                name: 'category_index',
+                fields: ['category'],
+            },
+        ],
     }
 );
 

@@ -38,6 +38,17 @@ MagazineContent.init(
     {
         sequelize,
         tableName: 'magazine_content',
+        indexes: [
+            {
+                name: 'magazine_id_index',
+                fields: ['magazine_id'],
+
+            },
+            {
+                name: 'content_tsvector_index',
+                fields: ['content_tsvector'],
+            }
+        ],
     }
 );
 

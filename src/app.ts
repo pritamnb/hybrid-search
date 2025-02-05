@@ -34,6 +34,5 @@ app.get('/health', (req: Request, res: Response) => {
     res.send('Server is running...');
 });
 
-// Additional routes can be added here if needed
 
 export default app;

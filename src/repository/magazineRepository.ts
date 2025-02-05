@@ -14,7 +14,9 @@ export class MagazineRepository implements IMagazineRepository {
                 mi.id,
                 mi.title,
                 mi.author,
+                mi.category,
                 mc.content
+
             FROM
                 magazine_content mc
             JOIN
@@ -47,17 +49,23 @@ export class MagazineRepository implements IMagazineRepository {
         }
     }
 
-    async searchByVector(query: string, page: number = 1, pageSize: number = 10, threshold: number = 0.8): Promise<ISearchResult[]> {
+    async searchByVector(query: string, page: number = 1, pageSize: number = 10, threshold: number = 0.2): Promise<ISearchResult[]> {
         try {
             const embedding = await generateEmbedding(query);
             const offset = (page - 1) * pageSize;
+            console.log("page :: pageSize", pageSize, "page :: ", page);
+            console.log("threshold", threshold);
+
+
+            console.log("offset :: ", offset);
+
             const results = await sequelize.query(`
                 SELECT
                     mi.id,
                     mi.title,
                     mi.author,
                     mc.content,
-                    content_embedding <=> '${embedding}'::vector AS similarity_score
+                    1-(content_embedding <=> '${embedding}'::vector) AS similarity_score
                 FROM
                     magazine_content mc
                 JOIN
@@ -65,19 +73,19 @@ export class MagazineRepository implements IMagazineRepository {
                 ON
                     mi.id = mc.magazine_id
                 WHERE
-                    content_embedding <=> '${embedding}'::vector <= ${threshold}
+                    (1-(content_embedding <=> '${embedding}'::vector) )>= ${threshold}
+
                 ORDER BY
-                    similarity_score
+                    similarity_score DESC
                 LIMIT ${pageSize}
                 OFFSET ${offset}
             `, {
                 type: QueryTypes.SELECT,
             });
+            console.log("results", results);
 
 
-            // Filter results based on the threshold and exclude similarity_score from the response
             const filteredResults = results
-                .filter((result: any) => result.similarity_score <= threshold)
                 .map((result: any) => {
                     const { similarity_score, ...rest } = result;
                     return rest;
