@@ -1,6 +1,6 @@
 import { Transaction } from 'sequelize';
 import MagazineContent from "../model/magazineContent.model";
-import { sequelize } from "../config/db";  // Assuming this is the instance of Sequelize
+import { sequelize } from "../config/db";
 import MagazineInformation from '../model/magazineInfo';
 
 export class MagazineRepository {
@@ -9,7 +9,7 @@ export class MagazineRepository {
         return await MagazineInformation.findAll();
     }
 
-    // Create Magazine entry with transaction
+    // Magazine entries with transaction
     async createMagazineEntry(magazineData: any, transaction: Transaction) {
         return await MagazineInformation.create(
             {
@@ -28,7 +28,7 @@ export class MagazineRepository {
         const magazineContent = await MagazineContent.create({
             magazine_id: magazineId,
             content: magazineData.content,
-            content_embedding: embedding, // Ensure this is an array of numbers
+            content_embedding: embedding,
             content_tsvector: contentTsvector,
         }, { transaction });
 

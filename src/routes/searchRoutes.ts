@@ -5,12 +5,11 @@ import { MagazineRepository } from '../repository/magazineRepository';
 
 const router = express.Router();
 
-// Instantiate repository, service, and controller
 const magazineRepository = new MagazineRepository();
 const magazineSearchService = new MagazineSearchService(magazineRepository);
 const searchController = new SearchController(magazineSearchService);
 
-// Define routes
+// Search by
 router.get('/keyword', (req, res) => searchController.keywordSearch(req, res));
 router.post('/vector', (req, res) => searchController.vectorSearch(req, res));
 router.post('/hybrid', (req, res) => searchController.hybridSearch(req, res));

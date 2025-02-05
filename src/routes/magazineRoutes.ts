@@ -10,6 +10,4 @@ router.get('/magazines', magazineController.getMagazines.bind(magazineController
 // Add a new magazine
 router.post('/magazine', magazineController.addMagazine.bind(magazineController));
 
-// Additional routes can be added here as needed
-
 export default router;

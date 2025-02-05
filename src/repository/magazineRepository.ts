@@ -1,4 +1,3 @@
-// repositories/MagazineRepository.ts
 import { IMagazineRepository } from "../interfaces/IMagazineRepository";
 import { ISearchResult } from "../interfaces/ISearchResult";
 import { QueryTypes } from "sequelize";
@@ -78,11 +77,10 @@ export class MagazineRepository implements IMagazineRepository {
 
             // Filter results based on the threshold and exclude similarity_score from the response
             const filteredResults = results
-                .filter((result: any) => result.similarity_score <= threshold) // Ensure similarity is within the threshold
+                .filter((result: any) => result.similarity_score <= threshold)
                 .map((result: any) => {
-                    // Remove similarity_score before returning
                     const { similarity_score, ...rest } = result;
-                    return rest; // Return the object without similarity_score
+                    return rest;
                 });
 
             return filteredResults;

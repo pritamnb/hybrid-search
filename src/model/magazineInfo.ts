@@ -1,5 +1,5 @@
 import { Sequelize, DataTypes, Model } from 'sequelize';
-import { sequelize } from '../config/db';  // Ensure this import is correctly pointing to your sequelize instance
+import { sequelize } from '../config/db';
 
 class MagazineInformation extends Model {
     public id!: number;
