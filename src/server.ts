@@ -8,7 +8,7 @@ const initDB = async () => {
     await connectDB();
     await sequelize.sync({ force: false })
         .then(async () => {
-            console.log('Database synced!');
+            console.info('Database synced!');
             await sequelize.query(`CREATE EXTENSION IF NOT EXISTS vector;`);
 
             // Alter column content_embedding
@@ -39,5 +39,5 @@ initDB();
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.info(`Server running on port ${PORT}`);
 });

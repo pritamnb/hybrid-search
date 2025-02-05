@@ -20,7 +20,7 @@ router.get('/load-magazines', async (req, res) => {
     try {
         for (const record of magazineData) {
             await magazineService.addMagazine(record)
-            console.log(`Inserted: ${record.title}`);
+            console.info(`Inserted: ${record.title}`);
         }
 
         res.json({ message: 'Magazines loaded successfully' });
@@ -35,7 +35,7 @@ router.get("/load-fake-magazines", async (req, res) => {
 
         for (const record of fakeMagazines) {
             await magazineService.addMagazine(record);
-            console.log(`Inserted: ${record.title}`);
+            console.info(`Inserted: ${record.title}`);
         }
 
         res.json({ message: "Fake magazines loaded successfully" });

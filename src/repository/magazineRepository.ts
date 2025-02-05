@@ -53,11 +53,7 @@ export class MagazineRepository implements IMagazineRepository {
         try {
             const embedding = await generateEmbedding(query);
             const offset = (page - 1) * pageSize;
-            console.log("page :: pageSize", pageSize, "page :: ", page);
-            console.log("threshold", threshold);
 
-
-            console.log("offset :: ", offset);
 
             const results = await sequelize.query(`
                 SELECT
@@ -82,7 +78,6 @@ export class MagazineRepository implements IMagazineRepository {
             `, {
                 type: QueryTypes.SELECT,
             });
-            console.log("results", results);
 
 
             const filteredResults = results
