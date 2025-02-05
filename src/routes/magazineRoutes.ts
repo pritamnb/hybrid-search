@@ -1,14 +1,15 @@
 import { Router } from 'express';
-import { getMagazines, addMagazine } from '../controller/magazineController';
+import { MagazineController } from '../controller/magazineController';
 
 const router = Router();
+const magazineController = new MagazineController();
 
 // Fetch all magazines
-router.get('/magazines', getMagazines);
+router.get('/magazines', magazineController.getMagazines.bind(magazineController));
 
 // Add a new magazine
-router.post('/magazine', addMagazine);
+router.post('/magazine', magazineController.addMagazine.bind(magazineController));
 
-// router.post('/add-magazines', addMagazinesBulk);
+// Additional routes can be added here as needed
 
 export default router;
