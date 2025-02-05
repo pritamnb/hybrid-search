@@ -11,7 +11,7 @@ const searchController = new SearchController(magazineSearchService);
 
 // Search by
 router.get('/keyword', (req, res) => searchController.keywordSearch(req, res));
-router.post('/vector', (req, res) => searchController.vectorSearch(req, res));
-router.post('/hybrid', (req, res) => searchController.hybridSearch(req, res));
+router.get('/vector', (req, res) => searchController.vectorSearch(req, res));
+router.get('/hybrid', (req, res) => searchController.hybridSearch(req, res));
 
 export default router;

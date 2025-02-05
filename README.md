@@ -9,7 +9,7 @@ A high-performance hybrid search solution for magazine content, combining vector
 - Vector search with semantic embeddings
 - Keyword-based full-text search
 - Hybrid search combining vector and text search
-- Magazine data loading 
+- Magazine data loading
 - Fake data generation for testing
 
 ## Technology Stack
@@ -46,29 +46,26 @@ ollama pull snowflake-arctic-embed
 
 https://ollama.com/download/windows
 ```
+    
+## After ollama installation open terminal and enter the following command
+
+    ollama pull snowflake-arctic-embed
+
 
 ### 3. Docker Configuration
 ```bash
 # Build and start containers
 docker-compose up --build
 
-# Or manually create PostgreSQL container
-docker run --name hybrid-search-postgres \
-  -e POSTGRES_USER=postgres \
-  -e POSTGRES_PASSWORD=password \
-  -e POSTGRES_DB=magazine_db \
-  -p 5432:5432 \
-  -d ankane/pgvector:latest
 ```
 
 ### 4. Project Setup
 ```bash
 # Install dependencies
 npm install
-
-# Create environment configuration
-cp .env.example .env
 ```
+# Create environment configuration
+.env file is already present- Update if required
 
 ## Running the Application
 
@@ -96,17 +93,46 @@ npm start
 #### 1. Load Initial Data
   - Load data first to populate database
 
-- **Load Magazines**: `/api/load-magazines` **Recommended**
+- **Load Magazines**: `GET http://localhost:3000/api/load-magazines` **Recommended**
 
-- *Load Fake Data*: `/api/load-fake-magazines`
+- *Load Fake Data*: `GET http://localhost:3000/api/load-fake-magazines`
+
 - Note : It is recommended to use relevant data for magazine content as vector search will check for cosine similarity.
 Fake endpoint will load irrelevant data.
 
+- **Add Magazine Single magazine**: `POST /api/magazine`
+  - Body:
+    ```json
+    {
+      "title": "Magazine Title",
+      "author": "Author Name",
+      "content": "Magazine description",
+      "category": "Category"
+    }
+    ```
+    - **Expected response**
+    ```json
+    {
+    "status": "success",
+    "data": {
+        "magazineInfo": {
+            "id": "2155",
+            "title": "The Evolution of Fashion Design",
+            "author": "Sophia Clark",
+            "publication_date": "2025-02-05T16:04:13.512Z",
+            "category": "Fashion",
+            "updatedAt": "2025-02-05T16:04:13.513Z",
+            "createdAt": "2025-02-05T16:04:13.513Z"
+        }
+    }
+    }
+    ```
+
 #### 2. Search Endpoints
 1. **Vector Search**
-   - Endpoint: `POST /api/search/vector`
-   - Body: `{"query": "architecture"}`
-   
+   - Endpoint: `GET /api/search/vector`
+   - Example : `http://localhost:3000/api/search/vector?query=Architecture&page=1&pageSize=10`
+
    - **Expected Response**
 
         ```json
@@ -130,11 +156,11 @@ Fake endpoint will load irrelevant data.
         ```
 2. **Keyword Search**
    - Endpoint: `GET /api/search/keyword`
-   - Params: 
+   - Example - `http://localhost:3000/api/search/keyword?query=architecture&page=1&pageSize=10`
+   - Params:
      - `query`: Search term
      - `page`: Page number
      - `pageSize`: Results per page
-    - Example - http://localhost:3000/api/search/keyword?query=architecture&page=1&pageSize=10
     - **Expected Response**
         ```json
         {
@@ -160,15 +186,9 @@ Fake endpoint will load irrelevant data.
         
 
 3. **Hybrid Search**
-   - Endpoint: `POST /api/search/hybrid`
-   - Body: 
-     ```json
-     {
-       "query": "architecture",
-       "page": 1,
-       "pageSize": 10
-     }
-     ```
+   - **Endpoint**: `GET /api/search/hybrid`
+   - **Example** : `http://localhost:3000/api/search/hybrid?query=Architecture and Urban&page=1&pageSize=10`
+
     -**Expected response**
 
     ```json
@@ -179,20 +199,15 @@ Fake endpoint will load irrelevant data.
                 "id": "19",
                 "title": "Modern Architecture in Urban Environments",
                 "author": "Isabella Mitchell",
-                "content": "The role of modern architecture in shaping the skyline and urban landscapes."
-            },
-            {
-                "id": "1",
-                "title": "Modern Architecture and Urban Design",
-                "author": "Linda White",
-                "content": "An exploration of how modern architecture and urban planning are reshaping cities and improving quality of life."
+                "content": "The role of modern architecture in shaping...
             }
-        ]
-        }
-    ```
+            ]
+            }
+            ```
 
-#### 3. Magazine Management
+#### 4. Magazine Management
 - **Get All Magazines**: `GET /api/magazines`
+- **Example** : `http://localhost:3000/api/magazines`
 - **Expected Response**
     ```json
             {
@@ -219,37 +234,13 @@ Fake endpoint will load irrelevant data.
             ]
             }
     ```
-- **Add Magazine**: `POST /api/magazine`
-  - Body: 
-    ```json
-    {
-      "title": "Magazine Title",
-      "author": "Author Name",
-      "content": "Magazine description",
-      "category": "Category"
-    }
-    ```
-    - **Expected response**
-    ```json
-    {
-    "status": "success",
-    "data": {
-        "magazineInfo": {
-            "id": "2155",
-            "title": "The Evolution of Fashion Design",
-            "author": "Sophia Clark",
-            "publication_date": "2025-02-05T16:04:13.512Z",
-            "category": "Fashion",
-            "updatedAt": "2025-02-05T16:04:13.513Z",
-            "createdAt": "2025-02-05T16:04:13.513Z"
-        }
-    }
-    }
-    ```
 ## Recommended Testing Sequence
 1. Load Magazines
 2. Get Magazines
-3. Perform different search types
+3. Perform different search types 
+    - Keyword search
+    - Vector search
+    - Hybrid search
 4. Add new magazines
 5. Verify search results
 
@@ -306,8 +297,6 @@ Fake endpoint will load irrelevant data.
 This approach allows complex, multi-dimensional searching across magazine content efficiently.
 
 
-
-<!--  -->
 
 ## Performance Reports
 

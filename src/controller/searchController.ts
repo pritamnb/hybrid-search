@@ -26,11 +26,12 @@ export class SearchController extends BaseController {
     }
 
     public async vectorSearch(req: Request, res: Response): Promise<void> {
-        const { query, page, pageSize } = req.body;
+        const { query, page, pageSize } = req.query;
+
 
         try {
             const results = await this.searchService.getVectorSearch(
-                query,
+                query as string,
                 Number(page) || 1,
                 Number(pageSize) || 10
             );
@@ -41,11 +42,11 @@ export class SearchController extends BaseController {
     }
 
     public async hybridSearch(req: Request, res: Response): Promise<void> {
-        const { query, page, pageSize } = req.body;
+        const { query, page, pageSize } = req.query;
 
         try {
             const results = await this.searchService.performHybridSearch(
-                query,
+                query as string,
                 Number(page) || 1,
                 Number(pageSize) || 10
             );

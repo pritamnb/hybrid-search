@@ -8,8 +8,11 @@
 	"item": [
 		{
 			"name": "Vector Search",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
-				"method": "POST",
+				"method": "GET",
 				"header": [
 					{
 						"key": "Content-Type",
@@ -18,10 +21,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"query\": \"architecture\"}"
+					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:3000/api/search/vector",
+					"raw": "http://localhost:3000/api/search/vector?query=Architecture and Urban&page=1&pageSize=10",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -31,6 +34,20 @@
 						"api",
 						"search",
 						"vector"
+					],
+					"query": [
+						{
+							"key": "query",
+							"value": "Architecture and Urban"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "10"
+						}
 					]
 				}
 			},
@@ -94,7 +111,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/api/search/keyword?query=architecture&page=1&pageSize=10",
+					"raw": "http://localhost:3000/api/search/keyword?query=Architecture and Urban&page=1&pageSize=10",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -108,7 +125,7 @@
 					"query": [
 						{
 							"key": "query",
-							"value": "architecture"
+							"value": "Architecture and Urban"
 						},
 						{
 							"key": "page",
@@ -125,11 +142,14 @@
 		},
 		{
 			"name": "Hybrid",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"auth": {
 					"type": "noauth"
 				},
-				"method": "POST",
+				"method": "GET",
 				"header": [],
 				"body": {
 					"mode": "raw",
@@ -141,7 +161,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/api/search/hybrid",
+					"raw": "http://localhost:3000/api/search/hybrid?query=Architecture and Urban&page=1&pageSize=10",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -151,6 +171,20 @@
 						"api",
 						"search",
 						"hybrid"
+					],
+					"query": [
+						{
+							"key": "query",
+							"value": "Architecture and Urban"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "10"
+						}
 					]
 				}
 			},
