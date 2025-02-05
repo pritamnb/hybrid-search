@@ -5,7 +5,11 @@ import { sequelize } from "../config/db";
 import { generateEmbedding } from "../utils/embedding";
 
 export class MagazineRepository implements IMagazineRepository {
-
+    /**
+     * Searches on title, author and content 
+     * paginated result
+     * 
+     */
     async searchByKeyword(query: string, page: number = 1, pageSize: number = 10): Promise<ISearchResult[]> {
         const offset = (page - 1) * pageSize;
 
@@ -49,6 +53,12 @@ export class MagazineRepository implements IMagazineRepository {
         }
     }
 
+
+    /**
+     * 
+     * @param threshold for retrieving relevant result 
+     * @returns matched result
+     */
     async searchByVector(query: string, page: number = 1, pageSize: number = 10, threshold: number = 0.2): Promise<ISearchResult[]> {
         try {
             const embedding = await generateEmbedding(query);

@@ -20,6 +20,7 @@ export const generateEmbedding = async (text: string): Promise<string> => {
 
         const embedding = response.embeddings[0];
 
+        // stringify to add it in req format in db
         const embeddingString = JSON.stringify(embedding);
 
         return embeddingString;

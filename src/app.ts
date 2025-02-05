@@ -5,8 +5,9 @@ import searchRoutes from './routes/searchRoutes';
 import magazineRoute from './routes/magazineRoutes';
 
 const app = express();
-
+// Cross origin resource sharing access for frontend api hit
 app.use(cors());
+// json content parse from payload
 app.use(bodyParser.json());
 
 // Logging middleware
@@ -25,8 +26,11 @@ app.use((req, res, next) => {
     next();
 });
 
-// Mount routes
+// routes
+// All search routes goes here
 app.use('/api/search', searchRoutes);
+
+// all add magazine routes goes here
 app.use('/api', magazineRoute);
 
 // Health check route

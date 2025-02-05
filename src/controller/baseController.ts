@@ -1,6 +1,8 @@
 import { Response } from "express";
 import { ResponseStatus } from "../enums/responseStatus";
-
+/**
+ * common response handler
+ */
 export class BaseController {
     protected handleSuccess(res: Response, data: any): void {
         res.json({

@@ -9,6 +9,8 @@ const initDB = async () => {
     await sequelize.sync({ force: false })
         .then(async () => {
             console.info('Database synced!');
+
+            // Vector extension 
             await sequelize.query(`CREATE EXTENSION IF NOT EXISTS vector;`);
 
             // Alter column content_embedding
@@ -35,6 +37,7 @@ const initDB = async () => {
         });
 };
 
+// Initiate database
 initDB();
 
 const PORT = process.env.PORT || 3000;

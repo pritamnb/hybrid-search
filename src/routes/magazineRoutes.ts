@@ -10,11 +10,15 @@ const magazineService = new MagazineService();
 // Fetch all magazines
 router.get('/magazines', magazineController.getMagazines.bind(magazineController));
 
-// Add a new magazine
+// Add a single new magazine
 router.post('/magazine', magazineController.addMagazine.bind(magazineController));
 
 
-
+/**
+ * Recommended data load
+ * Load meaningful magazines 
+ * "magazineData" contains real data
+ */
 router.get('/load-magazines', async (req, res) => {
 
     try {
@@ -29,6 +33,10 @@ router.get('/load-magazines', async (req, res) => {
         res.status(500).json({ error: 'Failed to insert magazines' });
     }
 });
+
+/**
+ * To load fake data
+ */
 router.get("/load-fake-magazines", async (req, res) => {
     try {
         const fakeMagazines = generateFakeMagazines(20); // Generate 20 fake records
