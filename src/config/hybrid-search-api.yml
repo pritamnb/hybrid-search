@@ -1,0 +1,116 @@
+openapi: 3.0.0
+info:
+  title: Hybrid Search API
+  version: 1.0.0
+  description: API for magazine search and management
+
+servers:
+  - url: http://localhost:3000/api
+
+paths:
+  /search/vector:
+    post:
+      summary: Vector Search
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  example: "architecture"
+      responses:
+        '200':
+          description: Successful vector search results
+
+  /magazines:
+    get:
+      summary: Get All Magazines
+      responses:
+        '200':
+          description: List of magazines
+
+  /magazine:
+    post:
+      summary: Add New Magazine
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "The Evolution of Fashion Design"
+                author:
+                  type: string
+                  example: "Sophia Clark"
+                content:
+                  type: string
+                  example: "How fashion design has evolved over the decades"
+                category:
+                  type: string
+                  example: "Fashion"
+      responses:
+        '201':
+          description: Magazine created successfully
+
+  /search/keyword:
+    get:
+      summary: Keyword Search
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Keyword search results
+
+  /search/hybrid:
+    post:
+      summary: Hybrid Search
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  example: "architecture"
+                page:
+                  type: integer
+                  example: 1
+                pageSize:
+                  type: integer
+                  example: 10
+      responses:
+        '200':
+          description: Hybrid search results
+
+  /load-magazines:
+    get:
+      summary: Load Magazines
+      responses:
+        '200':
+          description: Magazines loaded successfully
+
+  /load-fake-magazines:
+    get:
+      summary: Load Fake Magazines
+      responses:
+        '200':
+          description: Fake magazines loaded successfully

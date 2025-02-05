@@ -8,9 +8,6 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install
 
-# Install TensorFlow dependencies
-RUN npm install @tensorflow/tfjs-node @tensorflow-models/universal-sentence-encoder
-
 # Copy source code
 COPY . .
 

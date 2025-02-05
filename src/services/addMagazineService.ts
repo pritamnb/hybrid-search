@@ -32,7 +32,7 @@ export class MagazineService {
 
             await transaction.commit();
 
-            return { magazineInfo, magazineContent };
+            return { magazineInfo };
         } catch (error) {
             await transaction.rollback();
             console.error('Error adding magazine:', error);

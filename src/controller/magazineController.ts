@@ -24,8 +24,8 @@ export class MagazineController extends BaseController {
     public async addMagazine(req: Request, res: Response): Promise<void> {
         try {
             const magazineData = req.body;
-            const { magazineInfo, magazineContent } = await this.magazineService.addMagazine(magazineData);
-            this.handleSuccess(res, { magazineInfo, magazineContent });
+            const { magazineInfo } = await this.magazineService.addMagazine(magazineData);
+            this.handleSuccess(res, { magazineInfo });
         } catch (error) {
             this.handleError(res, error, 'Could not add magazine.');
         }
