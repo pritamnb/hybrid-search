@@ -199,11 +199,12 @@ Fake endpoint will load irrelevant data.
                 "id": "19",
                 "title": "Modern Architecture in Urban Environments",
                 "author": "Isabella Mitchell",
-                "content": "The role of modern architecture in shaping...
+                "content": "The role of modern architecture in shaping..."
             }
             ]
             }
-            ```
+
+    ```
 
 #### 4. Magazine Management
 - **Get All Magazines**: `GET /api/magazines`
