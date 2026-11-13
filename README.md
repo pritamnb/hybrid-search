@@ -6,6 +6,11 @@ A high-performance hybrid search solution for magazine content, combining vector
 
 ## How it works
 
+![How Hybrid Search works](docs/how-it-works.svg)
+
+<details>
+<summary>Technical flow (Mermaid)</summary>
+
 ```mermaid
 flowchart LR
     C([Client]) -->|"GET /api/search/hybrid?query=..."| API["Express API<br/>validate query + paging"]
@@ -35,6 +40,8 @@ flowchart LR
     E --> DB[("PostgreSQL<br/>magazine_information + magazine_content")]
     T --> DB
 ```
+
+</details>
 
 ## Features
 

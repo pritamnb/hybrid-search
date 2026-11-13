@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1320 760" width="1320" height="760" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#545b64"/>
+    </marker>
+    <style>
+      .t { font-size: 13px; font-weight: 700; fill: #16191f; text-anchor: middle; }
+      .s { font-size: 11px; fill: #545b64; text-anchor: middle; }
+      .l { font-size: 11px; fill: #545b64; }
+      .edge { stroke: #545b64; stroke-width: 1.6; fill: none; marker-end: url(#a); }
+      .dash { stroke: #545b64; stroke-width: 1.6; fill: none; stroke-dasharray: 6 4; marker-end: url(#a); }
+      .g { fill: none; stroke: #ffffff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+
+  <rect width="1320" height="760" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="40" y="44" font-size="22" font-weight="700" fill="#16191f">Hybrid Search API: system architecture</text>
+  <text x="40" y="68" font-size="13" fill="#545b64">Answers a question by searching for exact words and for meaning at the same time, then merging the best results.</text>
+
+  <!-- ===== Users ===== -->
+  <g transform="translate(70,330)">
+    <circle cx="0" cy="-14" r="11" fill="none" stroke="#232f3e" stroke-width="2.5"/>
+    <path d="M-20,18 Q0,-6 20,18" fill="none" stroke="#232f3e" stroke-width="2.5"/>
+    <circle cx="-26" cy="-6" r="8" fill="none" stroke="#232f3e" stroke-width="2"/>
+    <path d="M-40,18 Q-26,2 -14,12" fill="none" stroke="#232f3e" stroke-width="2"/>
+    <circle cx="26" cy="-6" r="8" fill="none" stroke="#232f3e" stroke-width="2"/>
+    <path d="M40,18 Q26,2 14,12" fill="none" stroke="#232f3e" stroke-width="2"/>
+  </g>
+  <text x="70" y="372" class="t">Users</text>
+  <text x="70" y="388" class="s">web app / Postman</text>
+
+  <!-- ===== Docker boundary ===== -->
+  <rect x="160" y="100" width="1130" height="600" fill="none" stroke="#7d8998" stroke-width="1.5" stroke-dasharray="8 5"/>
+  <rect x="160" y="100" width="150" height="26" fill="#232f3e"/>
+  <text x="235" y="118" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">Docker Compose</text>
+
+  <!-- ===== API layer group ===== -->
+  <rect x="200" y="170" width="250" height="330" fill="#fafafa" stroke="#e9822f" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <rect x="200" y="170" width="92" height="22" fill="#e9822f"/>
+  <text x="246" y="186" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">API layer</text>
+
+  <!-- Express API tile -->
+  <rect x="293" y="220" width="64" height="64" rx="8" fill="#ed7100"/>
+  <path class="g" d="M309,240 h32 M309,252 h32 M309,264 h20"/>
+  <circle cx="341" cy="264" r="4" fill="#fff"/>
+  <text x="325" y="304" class="t">REST API</text>
+  <text x="325" y="319" class="s">Node.js · Express</text>
+  <text x="325" y="333" class="s">/api/search/* · /api/magazine</text>
+
+  <!-- Validation tile -->
+  <rect x="293" y="370" width="64" height="64" rx="8" fill="#dd344c"/>
+  <path class="g" d="M325,382 l18,7 v12 c0,12 -9,19 -18,23 c-9,-4 -18,-11 -18,-23 v-12 z"/>
+  <path class="g" d="M316,402 l6,6 l12,-12"/>
+  <text x="325" y="454" class="t">Input validation</text>
+  <text x="325" y="469" class="s">query ≤ 500 chars · paging</text>
+  <text x="325" y="483" class="s">bound SQL parameters</text>
+
+  <!-- ===== Search engine group ===== -->
+  <rect x="500" y="140" width="420" height="390" fill="#fafafa" stroke="#147eba" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <rect x="500" y="140" width="112" height="22" fill="#147eba"/>
+  <text x="556" y="156" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">Search engine</text>
+
+  <!-- Keyword search -->
+  <rect x="560" y="200" width="64" height="64" rx="8" fill="#e7a414"/>
+  <circle cx="588" cy="228" r="13" class="g"/>
+  <path class="g" d="M598,238 l12,12"/>
+  <text x="592" y="284" class="t">Keyword search</text>
+  <text x="592" y="299" class="s">full-text · ts_rank</text>
+  <text x="592" y="313" class="s">exact words, names, titles</text>
+
+  <!-- Vector search -->
+  <rect x="560" y="390" width="64" height="64" rx="8" fill="#8c4fff"/>
+  <circle cx="580" cy="414" r="4" fill="#fff"/><circle cx="604" cy="410" r="4" fill="#fff"/>
+  <circle cx="592" cy="434" r="4" fill="#fff"/><circle cx="574" cy="440" r="3" fill="#fff"/>
+  <path class="g" style="stroke-width:2" d="M580,414 L604,410 L592,434 Z M592,434 L574,440"/>
+  <text x="592" y="474" class="t">Vector search</text>
+  <text x="592" y="489" class="s">cosine similarity</text>
+  <text x="592" y="503" class="s">similar meaning</text>
+
+  <!-- RRF fusion -->
+  <rect x="790" y="295" width="64" height="64" rx="8" fill="#e7157b"/>
+  <path class="g" d="M804,311 l18,16 M804,343 l18,-16 M822,327 h18 M834,321 l6,6 l-6,6"/>
+  <text x="822" y="379" class="t">Rank fusion (RRF)</text>
+  <text x="822" y="394" class="s">Σ 1 / (60 + rank)</text>
+  <text x="822" y="408" class="s">merge · de-duplicate · paginate</text>
+
+  <!-- ===== Data group ===== -->
+  <rect x="970" y="170" width="290" height="330" fill="#fafafa" stroke="#3b48cc" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <rect x="970" y="170" width="62" height="22" fill="#3b48cc"/>
+  <text x="1001" y="186" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">Data</text>
+
+  <!-- PostgreSQL tile -->
+  <rect x="1083" y="225" width="64" height="64" rx="8" fill="#2e73b8"/>
+  <ellipse cx="1115" cy="243" rx="17" ry="6" class="g"/>
+  <path class="g" d="M1098,243 v24 c0,8 34,8 34,0 v-24 M1098,255 c0,8 34,8 34,0"/>
+  <text x="1115" y="309" class="t">PostgreSQL</text>
+  <text x="1115" y="324" class="s">magazine articles + metadata</text>
+
+  <!-- index chips -->
+  <rect x="995" y="350" width="115" height="62" rx="6" fill="#ffffff" stroke="#e7a414" stroke-width="1.5"/>
+  <text x="1052" y="374" class="t" style="font-size:12px">GIN index</text>
+  <text x="1052" y="391" class="s">full-text (tsvector)</text>
+  <rect x="1125" y="350" width="115" height="62" rx="6" fill="#ffffff" stroke="#8c4fff" stroke-width="1.5"/>
+  <text x="1182" y="374" class="t" style="font-size:12px">HNSW index</text>
+  <text x="1182" y="391" class="s">pgvector embeddings</text>
+  <path d="M1115,330 v14 M1052,344 h130 M1052,344 v4 M1182,344 v4" stroke="#7d8998" stroke-width="1.2" fill="none"/>
+  <text x="1115" y="440" class="s">one database: words + meaning</text>
+  <text x="1115" y="455" class="s">for every article</text>
+
+  <!-- ===== AI model group ===== -->
+  <rect x="500" y="575" width="420" height="105" fill="#fafafa" stroke="#01a88d" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <rect x="500" y="575" width="108" height="22" fill="#01a88d"/>
+  <text x="554" y="591" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">Local AI model</text>
+  <rect x="630" y="600" width="56" height="56" rx="8" fill="#01a88d"/>
+  <path class="g" d="M646,628 c0,-12 24,-12 24,0 c0,8 -6,10 -6,16 h-12 c0,-6 -6,-8 -6,-16"/>
+  <text x="790" y="622" class="t">Ollama embeddings</text>
+  <text x="790" y="638" class="s">snowflake-arctic-embed</text>
+  <text x="790" y="653" class="s">turns text into a meaning vector</text>
+
+  <!-- ===== Edges ===== -->
+  <path class="edge" d="M115,330 H250 V252 H288"/>
+  <text x="122" y="320" class="l">1. search question</text>
+
+  <path class="edge" d="M325,288 V365"/>
+
+  <path class="edge" d="M362,402 H450 V232 H555"/>
+  <text x="458" y="226" class="l">2a</text>
+  <path class="edge" d="M362,410 H470 V422 H555"/>
+  <text x="472" y="416" class="l">2b</text>
+
+  <path class="edge" d="M592,458 V560 H658 V595"/>
+  <text x="600" y="524" class="l">3. embed the question</text>
+
+  <path class="edge" d="M629,232 H940 V255 H1078"/>
+  <text x="790" y="224" class="l">4a. word query → GIN</text>
+  <path class="edge" d="M629,422 H700 V500 H1182 V417"/>
+  <text x="740" y="494" class="l">4b. meaning query → HNSW</text>
+
+  <path class="edge" d="M640,250 C700,250 730,315 785,320"/>
+  <text x="690" y="270" class="l">ranked list A</text>
+  <path class="edge" d="M640,410 C700,410 730,345 785,338"/>
+  <text x="690" y="398" class="l">ranked list B</text>
+
+  <path class="dash" d="M822,412 V545 H280 V510 H70 V395"/>
+  <text x="300" y="562" class="l">5. best results first (rrf_score, matched_by)</text>
+
+  <!-- Ingestion edge -->
+  <path class="dash" d="M357,226 C400,92 1050,92 1110,218"/>
+  <text x="640" y="118" class="l">Adding articles: POST /api/magazine → embedding + tsvector, stored in one transaction</text>
+
+  <!-- legend -->
+  <line x1="1000" y1="730" x2="1040" y2="730" stroke="#545b64" stroke-width="1.6"/>
+  <text x="1048" y="734" class="l">request</text>
+  <line x1="1110" y1="730" x2="1150" y2="730" stroke="#545b64" stroke-width="1.6" stroke-dasharray="6 4"/>
+  <text x="1158" y="734" class="l">response / ingestion</text>
+</svg>
