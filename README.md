@@ -4,6 +4,38 @@
 
 A high-performance hybrid search solution for magazine content, combining vector and keyword search capabilities using PostgreSQL, pgvector, and Ollama for semantic embeddings.
 
+## How it works
+
+```mermaid
+flowchart LR
+    C([Client]) -->|"GET /api/search/hybrid?query=..."| API["Express API<br/>validate query + paging"]
+
+    API --> K & V
+
+    subgraph PG["PostgreSQL"]
+        FTS[("Full-text index (GIN)<br/>title / author / content")]
+        VEC[("pgvector index (HNSW)<br/>content embeddings")]
+    end
+
+    K["Keyword search<br/>ts_rank"] --> FTS
+    V["Vector search<br/>cosine similarity"] --> O["Ollama<br/>snowflake-arctic-embed"]
+    O -->|query embedding| VEC
+
+    FTS -->|ranked list A| RRF
+    VEC -->|ranked list B| RRF
+    RRF["Reciprocal Rank Fusion<br/>Σ 1/(60 + rank) · de-duplicate"] --> P["Paginate fused list"]
+    P -->|"results + rrf_score + matched_by"| C
+```
+
+**Adding content:** `POST /api/magazine` stores the magazine, generates its embedding with Ollama, and builds a full-text `tsvector`, all in one transaction, so every document is searchable both ways.
+
+```mermaid
+flowchart LR
+    A(["POST /api/magazine"]) --> E["Ollama embedding"] & T["to_tsvector()"]
+    E --> DB[("PostgreSQL<br/>magazine_information + magazine_content")]
+    T --> DB
+```
+
 ## Features
 
 - Vector search with semantic embeddings
