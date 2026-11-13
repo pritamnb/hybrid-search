@@ -3,5 +3,7 @@ export interface ISearchResult {
     title: string;
     author: string;
     content: string;
-    similarity_score?: number;
+    category?: string;
+    /** Raw score from the underlying search: ts_rank (keyword) or cosine similarity (vector). */
+    score?: number;
 }

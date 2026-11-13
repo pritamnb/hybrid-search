@@ -1,31 +1,26 @@
 import ollama from 'ollama';
 
+export const EMBEDDING_MODEL = 'snowflake-arctic-embed';
+
 /**
  * Generates a vector embedding for a given text using the Ollama model.
+ * Throws if the model is unavailable or returns no embedding, so callers fail loudly
+ * instead of querying the database with an empty vector.
  * @param text - The input text to embed.
- * @returns A Promise that resolves to a stringified array of numbers.
+ * @returns The embedding as an array of numbers.
  */
-export const generateEmbedding = async (text: string): Promise<string> => {
+export const generateEmbedding = async (text: string): Promise<number[]> => {
+    let response: { embeddings?: number[][] };
     try {
-
-        const response: any = await ollama.embed({
-            model: 'snowflake-arctic-embed',
-            input: text,
-        });
-
-
-        if (!response || !response.embeddings || !response.embeddings[0]) {
-            throw new Error('Invalid embedding response from Ollama');
-        }
-
-        const embedding = response.embeddings[0];
-
-        // stringify to add it in req format in db
-        const embeddingString = JSON.stringify(embedding);
-
-        return embeddingString;
+        response = await ollama.embed({ model: EMBEDDING_MODEL, input: text });
     } catch (error) {
-        console.error('Embedding error:', error);
-        return '[]';
+        console.error('Embedding request failed:', error);
+        throw new Error(`Could not generate an embedding with "${EMBEDDING_MODEL}". Is Ollama running?`);
     }
+
+    const embedding = response?.embeddings?.[0];
+    if (!Array.isArray(embedding) || embedding.length === 0) {
+        throw new Error('Invalid embedding response from Ollama');
+    }
+    return embedding;
 };

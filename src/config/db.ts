@@ -14,14 +14,18 @@ const createDatabaseIfNotExists = async (dbName: string) => {
         await postgresClient.connect();
 
         // Verify if the database exists
+        if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(dbName)) {
+            throw new Error(`Invalid database name: ${dbName}`);
+        }
         const res = await postgresClient.query(
-            `SELECT 1 FROM pg_database WHERE datname='${dbName}'`
+            'SELECT 1 FROM pg_database WHERE datname = $1',
+            [dbName]
         );
 
         // Create the database if it doesn't exist
         if (res.rowCount === 0) {
             console.info(`Database "${dbName}" does not exist. Creating it...`);
-            await postgresClient.query(`CREATE DATABASE ${dbName}`);
+            await postgresClient.query(`CREATE DATABASE "${dbName}"`); // name validated above
             console.info(`Database "${dbName}" created successfully.`);
         } else {
             console.info(`Database "${dbName}" already exists.`);

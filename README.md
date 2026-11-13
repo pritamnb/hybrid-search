@@ -4,6 +4,38 @@
 
 A high-performance hybrid search solution for magazine content, combining vector and keyword search capabilities using PostgreSQL, pgvector, and Ollama for semantic embeddings.
 
+## How it works
+
+```mermaid
+flowchart LR
+    C([Client]) -->|"GET /api/search/hybrid?query=..."| API["Express API<br/>validate query + paging"]
+
+    API --> K & V
+
+    subgraph PG["PostgreSQL"]
+        FTS[("Full-text index (GIN)<br/>title / author / content")]
+        VEC[("pgvector index (HNSW)<br/>content embeddings")]
+    end
+
+    K["Keyword search<br/>ts_rank"] --> FTS
+    V["Vector search<br/>cosine similarity"] --> O["Ollama<br/>snowflake-arctic-embed"]
+    O -->|query embedding| VEC
+
+    FTS -->|ranked list A| RRF
+    VEC -->|ranked list B| RRF
+    RRF["Reciprocal Rank Fusion<br/>Σ 1/(60 + rank) · de-duplicate"] --> P["Paginate fused list"]
+    P -->|"results + rrf_score + matched_by"| C
+```
+
+**Adding content:** `POST /api/magazine` stores the magazine, generates its embedding with Ollama, and builds a full-text `tsvector`, all in one transaction, so every document is searchable both ways.
+
+```mermaid
+flowchart LR
+    A(["POST /api/magazine"]) --> E["Ollama embedding"] & T["to_tsvector()"]
+    E --> DB[("PostgreSQL<br/>magazine_information + magazine_content")]
+    T --> DB
+```
+
 ## Features
 
 - Vector search with semantic embeddings
@@ -65,7 +97,7 @@ docker-compose up --build
 npm install
 ```
 # Create environment configuration
-.env file is already present- Update if required
+Copy `.env.example` to `.env` and update it if required
 
 ## Running the Application
 
@@ -80,6 +112,35 @@ npm run build
 npm start
 ```
 # Hybrid Search API
+
+## Design
+
+### Why hybrid search?
+Keyword search (PostgreSQL full-text, `ts_rank`) is precise for exact terms, names and authors. Vector search (pgvector cosine similarity on Ollama `snowflake-arctic-embed` embeddings) finds semantically related content even when the words differ. Combining them gives better recall than either alone.
+
+### How results are combined: Reciprocal Rank Fusion
+The two searches score on different scales (`ts_rank` vs cosine similarity), so raw scores can't be averaged. The hybrid endpoint fetches the top candidates from both searches and fuses them with **Reciprocal Rank Fusion** (Cormack et al., 2009):
+
+```
+rrf_score(doc) = Σ 1 / (60 + rank(doc))   over each list the doc appears in
+```
+
+Documents found by both searches rise to the top, duplicates are merged by id (`matched_by` shows which search found each result), and pagination is applied to the fused list so pages stay consistent.
+
+### Why pgvector?
+Content, metadata, full-text and embeddings live in one PostgreSQL database: one system to run, transactional writes, and SQL joins between vector and keyword results. An HNSW index (`vector_cosine_ops`) serves vector search and a GIN index serves full-text search.
+
+### Security
+All user input (search text, paging, similarity threshold, embeddings) is passed to SQL as bound parameters, LIKE wildcards are escaped, paging is clamped, and the `query` parameter is validated (required, max 500 characters).
+
+## Testing
+
+```bash
+npm test          # Jest unit tests (RRF fusion, SQL parameterisation, pagination, input validation)
+npm run typecheck # TypeScript type check
+```
+
+Copy `.env.example` to `.env` before running locally.
 
 ## Postman Testing Guide
 
