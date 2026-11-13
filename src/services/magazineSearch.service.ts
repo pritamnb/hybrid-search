@@ -1,5 +1,11 @@
 import { ISearchService } from "../interfaces/ISearchService";
 import { IMagazineRepository } from "../interfaces/IMagazineRepository";
+import { ISearchResult } from "../interfaces/ISearchResult";
+import { IFusedResult, reciprocalRankFusion } from "./rrf";
+
+/** How many candidates each search contributes before fusion (per page requested). */
+const CANDIDATE_MULTIPLIER = 3;
+const MAX_CANDIDATES = 100;
 
 export class MagazineSearchService implements ISearchService {
     private repository: IMagazineRepository;
@@ -7,40 +13,37 @@ export class MagazineSearchService implements ISearchService {
     constructor(repository: IMagazineRepository) {
         this.repository = repository;
     }
-    /**
-     * 
-     * @param query keyword
-     * @param page start
-     * @param pageSize size
-     * @returns total matched objects from title, author and content
-     */
-    async performKeywordSearch(query: string, page: number = 1, pageSize: number = 10): Promise<any[]> {
-        return await this.repository.searchByKeyword(query, page, pageSize);
+
+    /** Keyword (title, author, full-text content) search, paginated. */
+    async performKeywordSearch(query: string, page: number = 1, pageSize: number = 10): Promise<ISearchResult[]> {
+        return this.repository.searchByKeyword(query, page, pageSize);
+    }
+
+    /** Semantic search on content embeddings, paginated. */
+    async getVectorSearch(query: string, page: number = 1, pageSize: number = 10): Promise<ISearchResult[]> {
+        return this.repository.searchByVector(query, page, pageSize);
     }
 
     /**
-     * 
-     * @param query string
-     * @param page start
-     * @param pageSize size
-     * @returns Search based on vector similarity in the content embedding
-field.
+     * Hybrid search: fetch top candidates from both searches, fuse them with Reciprocal Rank Fusion
+     * (one ranking, no duplicates), then paginate the fused list so pages stay consistent.
      */
-    async getVectorSearch(query: string, page: number = 1, pageSize: number = 10): Promise<any[]> {
-        return await this.repository.searchByVector(query, page, pageSize);
-    }
+    async performHybridSearch(query: string, page: number = 1, pageSize: number = 10): Promise<IFusedResult[]> {
+        const safePage = Number.isFinite(page) && page >= 1 ? Math.floor(page) : 1;
+        const safeSize = Number.isFinite(pageSize) && pageSize >= 1 ? Math.floor(pageSize) : 10;
+        const candidates = Math.min(safePage * safeSize * CANDIDATE_MULTIPLIER, MAX_CANDIDATES);
 
-    /**
-     * 
-     * @param query string to search in both keyword and vector search
-     * @param page start
-     * @param pageSize size
-     * @returns combined result from both keyword and vector search
-     */
-    async performHybridSearch(query: string, page: number = 1, pageSize: number = 10): Promise<any[]> {
-        const keywordResults = await this.performKeywordSearch(query, page, pageSize);
-        const vectorResults = await this.getVectorSearch(query, page, pageSize);
+        const [keywordResults, vectorResults] = await Promise.all([
+            this.repository.searchByKeyword(query, 1, candidates),
+            this.repository.searchByVector(query, 1, candidates),
+        ]);
 
-        return [...vectorResults, ...keywordResults]; // Merge results
+        const fused = reciprocalRankFusion([
+            { source: "keyword", results: keywordResults },
+            { source: "vector", results: vectorResults },
+        ]);
+
+        const start = (safePage - 1) * safeSize;
+        return fused.slice(start, start + safeSize);
     }
 }

@@ -44,7 +44,7 @@ export class MagazineService {
     private async generateAndFormatEmbedding(content: string): Promise<string> {
         try {
             const embedding = await generateEmbedding(content);
-            return `${embedding}`;
+            return JSON.stringify(embedding); // pgvector text format: [1,2,3]
         } catch (error) {
             console.error('Failed to generate embedding:', error);
             throw new Error('Failed to generate embedding.');
